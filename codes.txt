@@ -1,0 +1,98 @@
+# 1. labeling Variables 
+
+ label define test01 1 "BBB" 2 "BMS" 3 "Beam" 4 "Tarlov"
+ label values test_cat test01
+
+-----------------------------------------------------------------------------
+
+# 2. Sorting the data
+
+sort author year
+
+-----------------------------------------------------------------------------
+
+# 3.Calculate the Effect Size for two groups
+
+meta esize n_treat mean_treat sd_treat n_sci mean_sci sd_sci, studylabel (author year)
+
+-----------------------------------------------------------------------------
+
+# 4. Forest Plot
+
+meta forestplot
+
+-----------------------------------------------------------------------------
+
+# 5. Galbraith Plot
+
+meta galbraithplot
+
+-----------------------------------------------------------------------------
+
+# 6. Removing Outliers 
+
+replace mean_treat = 14 in 14
+replace outlier = 1 in 4
+meta forestplot if outlier !=1
+
+-----------------------------------------------------------------------------
+
+# 7. Prediction interval and Reference line
+
+meta forestplot, predinterval
+
+meta forestplot, nullrefline
+
+-----------------------------------------------------------------------------
+
+# 8. Changing color and pattern of Reference Line
+
+meta forestplot, nullrefline (lcolor(red) lpattern(dash))
+meta forestplot, nullrefline (lcolor(red) lpattern(dash)) predinterval
+
+-----------------------------------------------------------------------------
+
+# 9. Changing color and Symbol  of "boxes" or "squares"
+
+meta forestplot, nullrefline (lcolor(red) lpattern(dash)) predinterval markeropts(mcolor(yellow) msymbol(O))
+
+-----------------------------------------------------------------------------
+
+# 10. Changing color and Symbol  of "Diamond"
+
+meta forestplot, nullrefline (lcolor(red) lpattern(dash)) predinterval markeropts(mcolor(yellow) msymbol(oh)) omarkeropts(mcolor(pink))
+Also, you can use help function: help meta forestplot
+
+-----------------------------------------------------------------------------
+
+# 11. comprehensive summary of the meta-analysis data
+
+meta summarize
+meta summarize, predinterval
+
+
+-----------------------------------------------------------------------------
+# 12. SubGroup Analysis and Meta-regression Analysis for Qualitative Variables
+
+meta forestplot, subgroup( setting_cat )
+meta forestplot if _meta_es < 4.5,  subgroup( setting_cat )
+meta regress i.setting_cat if _meta_es < 4.5
+
+
+-----------------------------------------------------------------------------
+# 13. Meta-regression Analysis for Quantitative Variables
+
+meta regress dose if _meta_es < 4.5
+
+-----------------------------------------------------------------------------
+# 14. Bubble Plot
+
+estat bubbleplot if _meta_es < 4.5
+
+-----------------------------------------------------------------------------
+
+# 15. in the process of completion...... 
+
+
+
+
