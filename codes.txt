@@ -65,7 +65,7 @@ Also, you can use help function: help meta forestplot
 
 -----------------------------------------------------------------------------
 
-# 11. comprehensive summary of the meta-analysis data
+# 11. Comprehensive summary of the meta-analysis data
 
 meta summarize
 meta summarize, predinterval
@@ -73,6 +73,7 @@ meta summarize, predinterval
 
 -----------------------------------------------------------------------------
 # 12. SubGroup Analysis and Meta-regression Analysis for Qualitative Variables
+      setting_cat: Severity as source of heterogeneity
 
 meta forestplot, subgroup( setting_cat )
 meta forestplot if _meta_es < 4.5,  subgroup( setting_cat )
@@ -80,19 +81,58 @@ meta regress i.setting_cat if _meta_es < 4.5
 
 
 -----------------------------------------------------------------------------
-# 13. Meta-regression Analysis for Quantitative Variables
+# 13. SubGroup Analysis and Meta-regression Analysis for Qualitative Variables
+      route_admin_cat: Route of Administration as source of heterogeneity
+
+meta forestplot if _meta_es < 4.5,  subgroup( route_admin_cat ) nullrefline predinterval
+replace mean_treat = 14 in 14
+meta forestplot if _meta_es < 3,  subgroup( route_admin_cat ) nullrefline predinterval
+
+
+-----------------------------------------------------------------------------
+# 14. Meta-regression Analysis for Quantitative Variables
 
 meta regress dose if _meta_es < 4.5
 
 -----------------------------------------------------------------------------
-# 14. Bubble Plot
+# 15. Bubble Plot
 
 estat bubbleplot if _meta_es < 4.5
 
 -----------------------------------------------------------------------------
 
-# 15. in the process of completion...... 
+#PUBLICATION BIAS
 
+-------------------------------------------------------------------------
+# 16. Trim and Fill Method
 
+meta trimfill if _meta_es < 4.5
+-------------------------------------------------------------------------
+# 17. Funnel Plot
 
+meta trimfill if _meta_es < 4.5,  funnel
+
+-------------------------------------------------------------------------
+# 18. Egger's Test
+
+meta bias if _meta_es < 4.5, egger
+meta bias, egger
+
+-------------------------------------------------------------------------
+
+# META BIAS
+
+-------------------------------------------------------------------------
+
+# 19. Dalman et al study for Publication bias
+
+meta regress mean_sci
+predict predicted
+generate residuals = _meta_es - predicted
+generate variance = (_meta_se)^2
+predict H, hat
+generate SEresiduals = sqrt((1-H)*(variance + e(tau2)))
+generate SS2 = 1 / _meta_studysize
+metabias residuals SS2, egger
+metafunnel residuals SS2
 
